@@ -10,19 +10,19 @@ type ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState('');
+  const [notification, setNotification] = useState(''); // New state for the notification message
   const navigation = useNavigation<ForgotPasswordScreenNavigationProp>(); 
 
   const handleResetPassword = async () => {
     try {
       await sendPasswordResetEmail(FIREBASE_AUTH, email);
-      Alert.alert('Kiểm tra email của bạn để đặt lại mật khẩu!');
-      navigation.navigate('Login'); 
+      setNotification('Kiểm tra email của bạn để đặt lại mật khẩu!');
+      setEmail(''); // Clear email after sending reset
     } catch (error: any) {
       if (error.code === 'auth/user-not-found') {
-        Alert.alert('Email không tồn tại. Bạn có thể đăng ký tài khoản mới.');
-        navigation.navigate('SignUp');
+        setNotification('Email không tồn tại. Bạn có thể đăng ký tài khoản mới.');
       } else {
-        Alert.alert('Đã xảy ra lỗi', error.message);
+        setNotification(`Đã xảy ra lỗi: ${error.message}`);
       }
     }
   };
@@ -42,6 +42,9 @@ const ForgotPasswordScreen = () => {
         autoCapitalize="none"
         placeholderTextColor="#888"
       />
+      {/* Display notification message if it exists */}
+      {notification ? <Text style={styles.notification}>{notification}</Text> : null}
+
       <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
         <Text style={styles.buttonText}>Gửi Yêu Cầu</Text>
       </TouchableOpacity>
@@ -54,13 +57,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#e0f7fa', // nền màu xanh nhạt
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#00796b', // màu xanh đậm
+    color: '#00796b', 
     marginBottom: 20,
   },
   subtitle: {
@@ -76,12 +79,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     marginBottom: 20,
     fontSize: 16,
-    borderColor: '#00796b', // viền màu xanh
+    borderColor: '#00796b', 
     borderWidth: 1,
+  },
+  notification: {
+    color: '#d32f2f', // Red color for the notification message
+    textAlign: 'center',
+    marginBottom: 10,
   },
   button: {
     height: 50,
-    backgroundColor: '#00796b', // màu xanh đậm
+    backgroundColor: '#00796b', 
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',

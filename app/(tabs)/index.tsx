@@ -9,7 +9,7 @@ export type RootStackParamList = {
   Login: undefined;
   Welcome: undefined;
   SignUp: undefined;
-  ForgotPassword: undefined; // Đã được khai báo
+  ForgotPassword: undefined; // Đã được declared
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

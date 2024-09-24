@@ -1,22 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { FIREBASE_AUTH } from '../app/(tabs)/firebaseConfig';
 import { signOut } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../app/(tabs)/index'; 
 
-// Định nghĩa kiểu cho navigation
+// Define navigation type
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
 const WelcomeScreen = () => {
   const user = FIREBASE_AUTH.currentUser;
-  const navigation = useNavigation<WelcomeScreenNavigationProp>(); // Áp dụng kiểu cho navigation
+  const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
   const handleLogout = async () => {
     try {
       await signOut(FIREBASE_AUTH);
-      navigation.navigate('Login'); // Điều hướng sau khi đăng xuất
+      navigation.navigate('Login');
     } catch (error: any) {
       console.error("Đăng xuất thất bại", error.message);
     }
@@ -24,7 +24,11 @@ const WelcomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🎉 Chúc mừng! 🎉</Text>
+      {/* User Avatar */}
+      <Image 
+        source={{ uri: user?.photoURL || 'https://th.bing.com/th/id/OIP.LPt9uYtd7xSkSbfDT-dXbAHaGq?rs=1&pid=ImgDetMain' }} // Placeholder if no avatar
+        style={styles.avatar}
+      />
       <Text style={styles.message}>Bạn đã đăng nhập thành công với tài khoản:</Text>
       <Text style={styles.email}>{user?.email}</Text>
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -42,12 +46,11 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f7f8fa',
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#4CAF50',
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     marginBottom: 20,
-    textAlign: 'center',
   },
   message: {
     fontSize: 18,
